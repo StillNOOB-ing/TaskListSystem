@@ -1,0 +1,93 @@
+﻿@page "/StatusView"
+@model StatusViewModel
+@{
+    ViewData["Title"] = "Status";
+}
+
+<h2>Status</h2>
+
+<p>
+    <a asp-action="OnAddClick">New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.StatusList)
+        {
+            <tr>
+                <td>
+                    <a href="#" class="edit-btn" data-id="@item.UID" data-name="@item.Name" data-description="@item.Description">Edit</a> |
+                    <a asp-action="OnDeleteClick" asp-route-id="@item">Delete</a>
+                </td>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="statusModalLabel">Edit Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="statusForm">
+                    <div class="mb-3">
+                        <label for="statusName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="statusName" name="statusName">
+                    </div>
+                    <div class="mb-3">
+                        <label for="statusDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="statusDescription" name="statusDescription"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveStatus">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all edit buttons
+        document.querySelectorAll(".edit-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let statusId = this.getAttribute("data-id");
+                let statusName = this.getAttribute("data-name");
+                let statusDescription = this.getAttribute("data-description");
+
+                // Set modal fields
+                document.getElementById("statusName").value = statusName;
+                document.getElementById("statusDescription").value = statusDescription;
+
+                // Show modal
+                let modal = new bootstrap.Modal(document.getElementById('statusModal'));
+                modal.show();
+            });
+        });
+
+        // Save button click
+        document.getElementById("saveStatus").addEventListener("click", function () {
+            let name = document.getElementById("statusName").value;
+            let description = document.getElementById("statusDescription").value;
+
+            // Send data to server (implement AJAX call if needed)
+            console.log("Saving Status:", name, description);
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
+        });
+    });
+</script>
