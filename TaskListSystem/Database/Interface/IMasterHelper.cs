@@ -28,6 +28,7 @@ namespace TaskListSystem.Database.Interface
 
         public IQueryable<MStatus> GetStatusDB();
         public Task<List<MStatus>> GetStatusAll();
+        public Task<MStatus> GetStatusByID(int id);
         public Task<ResultInfo> InsertStatus(MStatus item);
         public Task<ResultInfo> UpdateStatus(MStatus item);
         public Task<ResultInfo> DeleteStatus(MStatus item);

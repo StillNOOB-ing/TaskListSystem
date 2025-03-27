@@ -5,6 +5,7 @@ using TaskListSystem.Database;
 using TaskListSystem.Database.Model;
 
 using TaskListSystem.Database.Interface;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace TaskListSystem.Pages
 {
@@ -21,24 +22,44 @@ namespace TaskListSystem.Pages
 
         public List<MStatus> StatusList { get; set; } = new List<MStatus>();
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             StatusList = await masterHelper.GetStatusAll();
+
+            return Page();
         }
 
-        public async Task OnAddClick()
+        public async Task<IActionResult> OnPostEditStatus([FromBody] MStatus item)
         {
+            var result = await masterHelper.UpdateStatus(item);
 
+            if (result.success)
+            {
+                return new JsonResult(new { result.success, result.message });
+            }
+
+            return new JsonResult(new { result.success, result.message });
         }
 
-        public async Task OnEditClick(MStatus item)
+        public async Task<IActionResult> OnGetDeleteClick(int id)
         {
+            var item = await masterHelper.GetStatusByID(id);
 
-        }
+            if (item != null)
+            {
+                var result = await masterHelper.DeleteStatus(item);
 
-        public async Task OnDeleteClick(MStatus item)
-        {
-
+                if (result.success)
+                {
+                    return RedirectToPage("StatusView");
+                }
+                else
+                {
+                    return BadRequest(new { result.success, result.message });
+                }
+            }
+           
+            return NotFound(new { success = false, message = "Not Found"});
         }
     }
 }

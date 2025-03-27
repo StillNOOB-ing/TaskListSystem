@@ -2,6 +2,8 @@
 using TaskListSystem.Database.Interface;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using System.Threading.Tasks.Dataflow;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
 
 namespace TaskListSystem.Database.Helper
@@ -94,6 +96,10 @@ namespace TaskListSystem.Database.Helper
         public async Task<List<MStatus>> GetStatusAll()
         {
             return await repository.GetStatusAll(x => true);
+        }
+        public async Task<MStatus> GetStatusByID(int id)
+        {
+            return (await repository.GetStatusAll(x => x.UID == id)).FirstOrDefault();
         }
         public async Task<ResultInfo> InsertStatus(MStatus item)
         {
